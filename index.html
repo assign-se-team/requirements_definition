@@ -198,10 +198,13 @@
                 return alert('必須項目を入力してください。')
               };
 
+              // 読み込み開始
               loading.value = true;
 
+              // 2秒待つ
               setTimeout(console.log("go"), 2000);
 
+              // 画面遷移
               location.href = "/complete.html"
 
             };
