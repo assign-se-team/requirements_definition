@@ -44,7 +44,7 @@
                 label="年"
                 class="input_yearmonthday"
                 hide-bottom-space
-                :rules="[ val => val && val.length > 0 || 'この項目は必須項目です。']"
+                :options="years"
               >
               </q-select>
 
@@ -56,7 +56,7 @@
                 label="月"
                 class="input_yearmonthday"
                 hide-bottom-space
-                :rules="[ val => val && val.length > 0 || 'この項目は必須項目です。']"
+                :options="months"
               >
               </q-select>
 
@@ -68,7 +68,7 @@
                 label="日"
                 class="input_yearmonthday"
                 hide-bottom-space
-                :rules="[ val => val && val.length > 0 || 'この項目は必須項目です。']"
+                :options="days"
               >
               </q-select>
 
@@ -166,6 +166,15 @@
             const phone = ref('');
             const loading = ref(false);
 
+            // 年の選択肢作成
+            const years = ref(Array.from({ length: 2024 - 1900 + 1 }, (_, i) => (1900 + i)));
+
+            // 月の選択肢
+            const months = ref([1,2,3,4,5,6,7,8,9,10,11,12]);
+
+            // 日の選択肢
+            const days = ref(Array.from({ length: 31 - 1 + 1 }, (_, i) => (1 + i)))
+
             // 年齢のバリデーションを行う処理
             const ageRules = (val) => {
                 if(val === null && val === ''){
@@ -202,11 +211,16 @@
               loading.value = true;
 
               // 2秒待つ
-              setTimeout(console.log("go"), 2000);
+              function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+              };
 
-              // 画面遷移
-              location.href = "/complete.html"
+              async function wait3SecondsAsync() {
+                await sleep(2000);
+                location.href = "./complete.html";
+              };
 
+              wait3SecondsAsync();
             };
 
             return {
@@ -216,6 +230,9 @@
               age,
               phone,
               loading,
+              years,
+              months,
+              days,
               ageRules,
               validatePhoneNumber,
               applyDocument,
