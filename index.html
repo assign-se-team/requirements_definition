@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ASSIGN保険 見積もりシステム</title>
+    <link rel="icon" href="/img/assign-icon.png"/>
+
+    <!-- 非公開 -->
+    <meta name="robots" content="noindex">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=yes">
+    <link href="/src/main.css" rel="stylesheet" type="text/css">
+
+    <!-- Quasar設定 -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons|Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@^4.0.0/animate.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/quasar@2.12.2/dist/quasar.prod.css" rel="stylesheet" type="text/css">
+  </head>
+    <!-- ページが読み込まれるまでホワイトアウト -->
+    <body style="visibility: hidden" onLoad="document.body.style.visibility='visible'">
+      
+      <!-- メインのHTML -->
+      <div id="q-app">
+
+        <!-- 入力フォーム -->
+        <div class="input_container">
+
+          <h1>ASSIGN保険 見積もりシステム入力フォーム</h1>
+
+          <!-- 生年月日 -->
+          <div class="row">
+
+            <!-- タイトル -->
+            <div class="col-2 title">生年月日</div>
+
+            <!-- 入力フォーム -->
+             <div class="col-10 input">
+
+              <!-- 年 -->
+              <q-select
+                v-model="year"
+                outlined
+                dense
+                label="年"
+                class="input_yearmonthday"
+                hide-bottom-space
+                :rules="[ val => val && val.length > 0 || 'この項目は必須項目です。']"
+              >
+              </q-select>
+
+              <!-- 月 -->
+              <q-select
+                v-model="month"
+                outlined
+                dense
+                label="月"
+                class="input_yearmonthday"
+                hide-bottom-space
+                :rules="[ val => val && val.length > 0 || 'この項目は必須項目です。']"
+              >
+              </q-select>
+
+              <!-- 日 -->
+              <q-select
+                v-model="day"
+                outlined
+                dense
+                label="日"
+                class="input_yearmonthday"
+                hide-bottom-space
+                :rules="[ val => val && val.length > 0 || 'この項目は必須項目です。']"
+              >
+              </q-select>
+
+             </div>
+
+          </div>
+
+          <!-- 年齢 -->
+          <div class="row">
+
+            <!-- タイトル -->
+            <div class="col-2 title">年齢</div>
+
+            <!-- 入力フォーム -->
+             <div class="col-10 input">
+
+              <!-- 年齢 -->
+              <q-input
+                v-model="age"
+                outlined
+                dense
+                type="number"
+                class="input_yearmonthday"
+                hide-bottom-space
+                :rules="[ageRules]"
+              >
+              </q-input>
+
+             </div>
+
+          </div>
+
+          <!-- 年齢 -->
+          <div class="row">
+
+            <!-- タイトル -->
+            <div class="col-2 title">電話番号</div>
+
+            <!-- 入力フォーム -->
+            <div class="col-10 input">
+
+              <!-- 電話番号 -->
+              <q-input
+                v-model="phone"
+                stack-label
+                hide-bottom-space
+                outlined
+                class="q-mb-xs"
+                bg-color="white"
+                :rules="[validatePhoneNumber]"
+                dense
+              ></q-input>
+
+            </div>
+
+          </div>
+
+          <!-- 申し込みボタン -->
+          <div align="center">
+            <q-btn 
+              label="無料で見積もり" 
+              type="submit"
+              class="bg-red-14 submit_btn"
+              flat
+              outline
+              text-color="white"
+              @click="applyDocument"
+              :loading="loading"
+            >
+            </q-btn>
+          </div>
+
+        </div>
+
+      </div>
+      <!-- メインのHTML -->
+
+      <!-- Vue.js・Quasar設定 -->
+      <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/quasar@2.12.2/dist/quasar.umd.prod.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/quasar@2.12.2/dist/lang/ja.umd.prod.js"></script>
+      <script>
+        const { useQuasar } = Quasar;
+        const { ref } = Vue;
+        
+        const app = Vue.createApp({
+          setup () {
+
+            //変数宣言
+            const $q = useQuasar();
+            const year = ref('');
+            const month = ref('');
+            const day = ref('');
+            const age = ref('');
+            const phone = ref('');
+            const loading = ref(false);
+
+            // 年齢のバリデーションを行う処理
+            const ageRules = (val) => {
+                if(val === null && val === ''){
+                  return 'この項目は必須項目です。';
+                } else if (val < 0 || val > 100){
+                  return '適切な年齢を入力してください';
+                }
+                return true; // バリデーションに合格
+            };
+
+            // -1には対応できるが、「0000」に対しては無力
+
+            // 電話番号のバリデーションを行う処理
+            const validatePhoneNumber = (val) => {
+              const phoneNumberRegex = /^0[-\d]{9,12}$/;
+              if (!val || val.length === 0) {
+                return "この項目は必須項目です。";
+              } else if (!phoneNumberRegex.test(val)) {
+                return "正しい電話番号の形式を最後まで入力してください。";
+              }
+              return true; // バリデーションに合格
+            };
+
+            // 固定電話でも携帯電話でも対応できるが、「12345678」みたいなものには無力
+
+            // 見積もり請求を行う処理
+            const applyDocument = async(event) =>{
+
+              if(year.value === "" || month.value === "" || day.value === "" || age.value === "" || phone.value === ""){
+                return alert('必須項目を入力してください。')
+              };
+
+              loading.value = true;
+
+              setTimeout(console.log("go"), 2000);
+
+              location.href = "/complete.html"
+
+            };
+
+            return {
+              year,
+              month,
+              day,
+              age,
+              phone,
+              loading,
+              ageRules,
+              validatePhoneNumber,
+              applyDocument,
+            }
+          }
+        });
+        app.use(Quasar,{
+          config: {
+            brand: {
+              primary: '#00084d',
+            }
+          },
+        })
+        Quasar.lang.set(Quasar.lang.ja)
+        app.mount('#q-app')
+      </script>
+    </body>
+</html>
+

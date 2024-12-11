@@ -1,0 +1,39 @@
+body div#q-app{
+  width: 600px;
+  margin: 50px auto 0px auto;
+}
+
+.input_container{
+  padding: 10px 20px 20px 20px;
+  border: 1px lightgray solid;
+  border-radius: 0.5rem;
+}
+
+.input_container h1{
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 28px;
+  text-align: center;
+}
+
+button.submit_btn{
+  width: 200px;
+  margin-top: 20px;
+}
+
+.title{
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.input{
+  padding: 5px;
+  display: flex;
+}
+
+label.input_yearmonthday{
+  width: 32%;
+  margin-right: 2%;
+}
