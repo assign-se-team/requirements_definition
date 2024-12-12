@@ -203,9 +203,21 @@
             // 見積もり請求を行う処理
             const applyDocument = async(event) =>{
 
+              // 未入力弾く
               if(year.value === "" || month.value === "" || day.value === "" || age.value === "" || phone.value === ""){
                 return alert('必須項目を入力してください。')
               };
+
+              // 不適切な年齢弾く
+              if (age.value < 0 || age.value > 100){
+                return alert('適切な年齢を入力してください');
+              };
+
+              // 電話番号弾く
+              const phoneNumberRegex = /^0[-\d]{9,12}$/;
+              if (!phoneNumberRegex.test(phone.value)) {
+                return alert("正しい電話番号の形式を最後まで入力してください。");
+              }
 
               // 読み込み開始
               loading.value = true;
